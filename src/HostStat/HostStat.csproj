@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <Platform>x64</Platform>
+        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+        <PackageId>HostStat.NET</PackageId>
+        <Authors>Event Store Ltd</Authors>
+        <PackageLicense>https://github.com/EventStore/HostStat.NET/blob/master/LICENSE.md</PackageLicense>
+        <PackageProjectUrl>https://eventstore.com</PackageProjectUrl>
+        <PackageIcon>icon.png</PackageIcon>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <Description>Provides a set of PInvoke bindings over libhoststat which is a native library for retrieving stastics from the host.</Description>
+        <Copyright>Copyright 2012-2020 Event Store Ltd</Copyright>
+        <PackageTags>statistics</PackageTags>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="images\icon.png" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <PropertyGroup>
+        <LibHostStatVersion>v1.0.0</LibHostStatVersion>
+        <LibHostStatLinuxLocation>https://github.com/EventStore/libhoststat/releases/download/$(LibHostStatVersion)/libhoststat-linux.so</LibHostStatLinuxLocation>
+        <LibHostStatOSXLocation>https://github.com/EventStore/libhoststat/releases/download/$(LibHostStatVersion)/libhoststat-darwin.dylib</LibHostStatOSXLocation>
+    </PropertyGroup>
+
+    <Target Name="DownloadNativeLibraries" BeforeTargets="BeforeBuild">
+        <DownloadFile SourceUrl="$(LibHostStatLinuxLocation)" DestinationFolder="$(MSBuildProjectDirectory)/runtimes/linux/native" DestinationFileName="libhoststat.so">
+            <Output TaskParameter="DownloadedFile" ItemName="None" />
+        </DownloadFile>
+        <DownloadFile SourceUrl="$(LibHostStatOSXLocation)" DestinationFolder="$(MSBuildProjectDirectory)/runtimes/osx/native" DestinationFileName="libhoststat.dylib">
+            <Output TaskParameter="DownloadedFile" ItemName="None" />
+        </DownloadFile>
+    </Target>
+
+    <ItemGroup>
+        <Content Include="$(MSBuildProjectDirectory)/runtimes/linux/native/libhoststat.so">
+            <PackagePath>runtimes/linux/native/libhoststat.so</PackagePath>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="$(MSBuildProjectDirectory)/runtimes/osx/native/libhoststat.dylib">
+            <PackagePath>runtimes/osx/native/libhoststat.dylib</PackagePath>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+</Project>

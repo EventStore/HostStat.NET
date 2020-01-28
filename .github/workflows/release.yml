@@ -1,0 +1,35 @@
+name: Release
+on:
+  push:
+    tags:
+      - "v*"
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.100
+
+      - name: Get the version
+        id: get_version
+        run: echo ::set-output name=version::${GITHUB_REF:11}
+
+      - name: Build, Pack and Publish
+        run: |
+          dotnet pack /p:Version=${{ steps.get_version.outputs.version }} -o artefacts -c Release src/HostStat/HostStat.csproj
+          dotnet nuget push artefacts/HostStat.NET.${{ steps.get_version.outputs.version }}.nupkg -k ${{ secrets.nugetkey }} -s https://api.nuget.org/v3/index.json
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
