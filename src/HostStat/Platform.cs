@@ -43,6 +43,10 @@ namespace HostStat {
 
 		private static (string libExt, string ridPlatform) GetPlatformConstants() {
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
+
+				if (RuntimeInformation.OSArchitecture == Architecture.Arm64)
+					return ("so", "linux-arm64");
+
 				return ("so", "linux");
 			}
 

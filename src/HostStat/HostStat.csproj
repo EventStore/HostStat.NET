@@ -26,11 +26,15 @@
     <PropertyGroup>
         <LibHostStatVersion>v1.0.0</LibHostStatVersion>
         <LibHostStatLinuxLocation>https://github.com/EventStore/libhoststat/releases/download/$(LibHostStatVersion)/libhoststat-linux.so</LibHostStatLinuxLocation>
+        <LibHostStatLinuxArm64Location>https://github.com/EventStore/libhoststat/releases/download/$(LibHostStatVersion)/libhoststat-linux-arm64.so</LibHostStatLinuxArm64Location>
         <LibHostStatOSXLocation>https://github.com/EventStore/libhoststat/releases/download/$(LibHostStatVersion)/libhoststat-darwin.dylib</LibHostStatOSXLocation>
     </PropertyGroup>
 
     <Target Name="DownloadNativeLibraries" BeforeTargets="BeforeBuild">
         <DownloadFile SourceUrl="$(LibHostStatLinuxLocation)" DestinationFolder="$(MSBuildProjectDirectory)/runtimes/linux/native" DestinationFileName="libhoststat.so">
+            <Output TaskParameter="DownloadedFile" ItemName="None" />
+        </DownloadFile>
+		<DownloadFile SourceUrl="$(LibHostStatLinuxArm64Location)" DestinationFolder="$(MSBuildProjectDirectory)/runtimes/linux-arm64/native" DestinationFileName="libhoststat.so">
             <Output TaskParameter="DownloadedFile" ItemName="None" />
         </DownloadFile>
         <DownloadFile SourceUrl="$(LibHostStatOSXLocation)" DestinationFolder="$(MSBuildProjectDirectory)/runtimes/osx/native" DestinationFileName="libhoststat.dylib">
@@ -41,6 +45,10 @@
     <ItemGroup>
         <Content Include="$(MSBuildProjectDirectory)/runtimes/linux/native/libhoststat.so">
             <PackagePath>runtimes/linux/native/libhoststat.so</PackagePath>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+		 <Content Include="$(MSBuildProjectDirectory)/runtimes/linux-arm64/native/libhoststat.so">
+            <PackagePath>runtimes/linux-arm64/native/libhoststat.so</PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
         <Content Include="$(MSBuildProjectDirectory)/runtimes/osx/native/libhoststat.dylib">
