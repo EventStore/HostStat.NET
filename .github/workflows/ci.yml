@@ -21,3 +21,22 @@ jobs:
       - name: Build and Test
         run: |
           dotnet test src/
+  ci-linux-arm64:
+    name : ci (linux-arm64)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Docker Setup QEMU
+        uses: docker/setup-qemu-action@v1.2.0
+        with:
+          platforms: arm64
+      - name: Setup dotnet arm64 Container
+        run: |
+          docker run -td --rm \
+          --volume $(pwd):/HostStat.Net \
+          -w /HostStat.Net  \
+          --name dotnet_arm \
+          mcr.microsoft.com/dotnet/sdk:3.1-buster-arm64v8 
+      - name: Build & Test (linux-arm64)
+        run : docker exec dotnet_arm dotnet test src/
